@@ -41,4 +41,25 @@ public class OrderServlet extends HttpServlet {
             request.getRequestDispatcher("views/order-history.jsp").forward(request, response);
         }
     }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect("login");
+            return;
+        }
+
+        User user = (User) session.getAttribute("user");
+        String action = request.getParameter("action");
+
+        if ("cancel".equals(action)) {
+            int orderId = Integer.parseInt(request.getParameter("id"));
+            OrderDAO orderDAO = new OrderDAO();
+            orderDAO.cancelOrder(orderId, user.getUserId());
+        }
+
+        response.sendRedirect("orders");
+    }
 }

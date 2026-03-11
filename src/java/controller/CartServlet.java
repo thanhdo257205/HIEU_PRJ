@@ -54,6 +54,7 @@ public class CartServlet extends HttpServlet {
                 int quantity = 1;
                 try { quantity = Integer.parseInt(request.getParameter("quantity")); } catch (Exception e) {}
                 cartDAO.addToCart(user.getUserId(), productId, quantity);
+                session.setAttribute("cartMessage", "Sản phẩm đã được thêm vào giỏ hàng!");
                 // Redirect lai trang truoc do
                 String referer = request.getHeader("Referer");
                 response.sendRedirect(referer != null ? referer : "home");

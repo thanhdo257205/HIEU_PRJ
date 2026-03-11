@@ -63,11 +63,22 @@ public class ProductDetailServlet extends HttpServlet {
 
         model.User user = (model.User) session.getAttribute("user");
         int productId = Integer.parseInt(request.getParameter("productId"));
-        int rating = Integer.parseInt(request.getParameter("rating"));
-        String comment = request.getParameter("comment");
-
+        String action = request.getParameter("action");
         ReviewDAO reviewDAO = new ReviewDAO();
-        reviewDAO.addReview(user.getUserId(), productId, rating, comment);
+
+        if ("delete".equals(action)) {
+            int reviewId = Integer.parseInt(request.getParameter("reviewId"));
+            reviewDAO.deleteReview(reviewId, user.getUserId());
+        } else if ("edit".equals(action)) {
+            int reviewId = Integer.parseInt(request.getParameter("reviewId"));
+            int rating = Integer.parseInt(request.getParameter("rating"));
+            String comment = request.getParameter("comment");
+            reviewDAO.updateReview(reviewId, user.getUserId(), rating, comment);
+        } else {
+            int rating = Integer.parseInt(request.getParameter("rating"));
+            String comment = request.getParameter("comment");
+            reviewDAO.addReview(user.getUserId(), productId, rating, comment);
+        }
 
         response.sendRedirect("product?id=" + productId);
     }
