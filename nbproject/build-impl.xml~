@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+        *** GENERATED FROM project.xml - DO NOT EDIT  ***
+        ***         EDIT ../build.xml INSTEAD         ***
+-->
+<project name="PCS_WEB-impl" default="default" basedir="..">
+    <fail message="Please build using Ant 1.7.1 or higher.">
+        <condition>
+            <not>
+                <antversion atleast="1.7.1"/>
+            </not>
+        </condition>
+    </fail>
+    <target name="default" depends="dist" description="Build whole project."/>
+
+    <target name="-pre-init">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the build.xml file. -->
+    </target>
+
+    <target name="-init-private" depends="-pre-init">
+        <property file="nbproject/private/private.properties"/>
+    </target>
+
+    <target name="-init-user" depends="-pre-init,-init-private">
+        <property file="${user.properties.file}"/>
+    </target>
+
+    <target name="-init-project" depends="-pre-init,-init-private,-init-user">
+        <property file="nbproject/project.properties"/>
+    </target>
+
+    <target name="-do-init" depends="-pre-init,-init-private,-init-user,-init-project">
+        <property name="have.sources" value="true"/>
+        <condition property="netbeans.home+have.tests">
+            <and>
+                <isset property="netbeans.home"/>
+                <available file="${test.src.dir}"/>
+            </and>
+        </condition>
+        <condition property="no.javadoc.preview">
+            <isfalse value="${javadoc.preview}"/>
+        </condition>
+        <available file="${conf.dir}/MANIFEST.MF" property="has.custom.manifest"/>
+        <available file="${persistence.xml.dir}/persistence.xml" property="has.persistence.xml"/>
+        <condition property="do.compile.jsps">
+            <istrue value="${compile.jsps}"/>
+        </condition>
+        <condition property="do.display.browser">
+            <istrue value="${display.browser}"/>
+        </condition>
+        <condition property="do.display.browser.debug">
+            <istrue value="${display.browser}"/>
+        </condition>
+    </target>
+
+    <target name="-post-init" depends="-pre-init,-init-private,-init-user,-init-project,-do-init">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the build.xml file. -->
+    </target>
+
+    <target name="-init-check" depends="-pre-init,-init-private,-init-user,-init-project,-do-init,-post-init">
+        <fail unless="src.dir">Must set src.dir</fail>
+        <fail unless="build.web.dir">Must set build.web.dir</fail>
+        <fail unless="dist.war">Must set dist.war</fail>
+        <condition property="no.deps">
+            <and>
+                <istrue value="${no.dependencies}"/>
+            </and>
+        </condition>
+    </target>
+
+    <target name="-init-macrodef-property">
+        <macrodef name="property" uri="http://www.netbeans.org/ns/web-project/1">
+            <attribute name="name"/>
+            <attribute name="value"/>
+            <sequential>
+                <property name="@{name}" value="${@{value}}"/>
+            </sequential>
+        </macrodef>
+    </target>
+
+    <target name="-init-macrodef-javac">
+        <macrodef name="javac" uri="http://www.netbeans.org/ns/web-project/2">
+            <attribute name="srcdir" default="${src.dir}"/>
+            <attribute name="destdir" default="${build.classes.dir}"/>
+            <attribute name="classpath" default="${javac.classpath}"/>
+            <attribute name="includes" default="${includes}"/>
+            <attribute name="excludes" default="${excludes}"/>
+            <attribute name="debug" default="${javac.debug}"/>
+            <attribute name="gensrcdir" default="${build.generated.sources.dir}"/>
+            <element name="customize" optional="true"/>
+            <sequential>
+                <property name="empty.dir" location="${build.dir}/empty"/>
+                <mkdir dir="${empty.dir}"/>
+                <javac srcdir="@{srcdir}" destdir="@{destdir}" debug="@{debug}" deprecation="${javac.deprecation}" source="${javac.source}" target="${javac.target}" includeantruntime="false" encoding="${source.encoding}">
+                    <classpath>
+                        <path path="@{classpath}"/>
+                    </classpath>
+                    <compilerarg line="${javac.compilerargs}"/>
+                    <customize/>
+                </javac>
+            </sequential>
+        </macrodef>
+    </target>
+
+    <target name="-init-macrodef-junit"/>
+
+    <target name="-init-macrodef-nbjpda">
+        <macrodef name="nbjpdastart" uri="http://www.netbeans.org/ns/web-project/1">
+            <attribute name="name" default="${main.class}"/>
+            <attribute name="classpath" default="${debug.classpath}"/>
+            <sequential>
+                <nbjpdastart transport="dt_socket" addressproperty="jpda.address" name="@{name}">
+                    <classpath>
+                        <path path="@{classpath}"/>
+                    </classpath>
+                </nbjpdastart>
+            </sequential>
+        </macrodef>
+
+        <macrodef name="nbjpdareload" uri="http://www.netbeans.org/ns/web-project/1">
+            <attribute name="dir" default="${build.classes.dir}"/>
+            <sequential>
+                <nbjpdareload>
+                    <fileset includes="${fix.classes}" dir="@{dir}"/>
+                </nbjpdareload>
+            </sequential>
+        </macrodef>
+    </target>
+
+    <target name="-init-macrodef-debug">
+        <macrodef name="debug" uri="http://www.netbeans.org/ns/web-project/1">
+            <attribute name="classname" default="${main.class}"/>
+            <attribute name="classpath" default="${debug.classpath}"/>
+            <attribute name="args" default="${application.args}"/>
+            <element name="customize" optional="true"/>
+            <sequential>
+                <java fork="true" classname="@{classname}">
+                    <jvmarg value="-Xdebug"/>
+                    <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
+                    <classpath>
+                        <path path="@{classpath}"/>
+                    </classpath>
+                    <arg line="@{args}"/>
+                    <customize/>
+                </java>
+            </sequential>
+        </macrodef>
+    </target>
+
+    <target name="-init-debug-args"/>
+
+    <target name="-init-taskdefs" depends="-init-user">
+        <condition property="have.taskdefs">
+            <istrue value="false"/>
+        </condition>
+    </target>
+
+    <target name="init" depends="-pre-init,-init-private,-init-user,-init-project,-do-init,-post-init,-init-check,-init-macrodef-property,-init-macrodef-javac,-init-macrodef-junit,-init-macrodef-nbjpda,-init-macrodef-debug,-init-debug-args,-init-taskdefs"/>
+
+    <!--
+                COMPILATION SECTION
+    -->
+    <target name="-pre-pre-compile" depends="init">
+        <mkdir dir="${build.classes.dir}"/>
+    </target>
+
+    <target name="-pre-compile" depends="-pre-pre-compile">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the build.xml file. -->
+    </target>
+
+    <target name="library-inclusion-in-archive" depends="compile"/>
+    <target name="library-inclusion-in-manifest" depends="compile"/>
+
+    <target name="-do-compile" depends="init,-pre-pre-compile,-pre-compile" if="have.sources">
+        <webproject2:javac xmlns:webproject2="http://www.netbeans.org/ns/web-project/2" gensrcdir="${build.generated.sources.dir}"/>
+        <copy todir="${build.classes.dir}">
+            <fileset dir="${src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
+        </copy>
+    </target>
+
+    <target name="-post-compile" depends="init,-pre-pre-compile,-pre-compile,-do-compile">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the build.xml file. -->
+    </target>
+
+    <target name="compile" depends="init,-pre-pre-compile,-pre-compile,-do-compile,-post-compile" description="Compile project."/>
+
+    <target name="-pre-compile-single" depends="init"/>
+
+    <target name="-do-compile-single" depends="init,-pre-compile-single">
+        <fail unless="javac.includes">Must select some files in the IDE or set javac.includes</fail>
+        <webproject2:javac xmlns:webproject2="http://www.netbeans.org/ns/web-project/2" includes="${javac.includes}" excludes="" gensrcdir="${build.generated.sources.dir}"/>
+    </target>
+
+    <target name="-post-compile-single" depends="init,-pre-compile-single,-do-compile-single"/>
+
+    <target name="compile-single" depends="init,-pre-compile-single,-do-compile-single,-post-compile-single"/>
+
+    <!--
+                DIST BUILDING SECTION
+    -->
+    <target name="-pre-dist" depends="init">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the build.xml file. -->
+    </target>
+
+    <target name="-do-copy-manifest" depends="init" if="has.custom.manifest">
+        <mkdir dir="${build.web.dir}/META-INF"/>
+        <copy todir="${build.web.dir}/META-INF" file="${conf.dir}/MANIFEST.MF"/>
+    </target>
+
+    <target name="-do-copy-persistence-xml" depends="init" if="has.persistence.xml">
+        <mkdir dir="${build.web.dir}/WEB-INF/classes/META-INF"/>
+        <copy todir="${build.web.dir}/WEB-INF/classes/META-INF" file="${persistence.xml.dir}/persistence.xml"/>
+    </target>
+
+    <target name="-do-dist-without-manifest" depends="init,-pre-dist,compile,-do-copy-persistence-xml" unless="has.custom.manifest">
+        <dirname property="dist.jar.dir" file="${dist.war}"/>
+        <mkdir dir="${dist.jar.dir}"/>
+        <mkdir dir="${build.web.dir}"/>
+        <copy todir="${build.web.dir}">
+            <fileset dir="${web.docbase.dir}" excludes="${build.web.excludes},WEB-INF/classes/**"/>
+        </copy>
+        <copy todir="${build.web.dir}/WEB-INF">
+            <fileset dir="${webinf.dir}" includes="**" excludes="classes/**,lib/**,web.xml"/>
+        </copy>
+        <war destfile="${dist.war}" needxmlfile="false">
+            <fileset dir="${build.web.dir}" excludes="WEB-INF/classes/.netbeans_*"/>
+        </war>
+    </target>
+
+    <target name="-do-dist-with-manifest" depends="init,-pre-dist,compile,-do-copy-manifest,-do-copy-persistence-xml" if="has.custom.manifest">
+        <dirname property="dist.jar.dir" file="${dist.war}"/>
+        <mkdir dir="${dist.jar.dir}"/>
+        <mkdir dir="${build.web.dir}"/>
+        <copy todir="${build.web.dir}">
+            <fileset dir="${web.docbase.dir}" excludes="${build.web.excludes},WEB-INF/classes/**"/>
+        </copy>
+        <war destfile="${dist.war}" manifest="${build.web.dir}/META-INF/MANIFEST.MF" needxmlfile="false">
+            <fileset dir="${build.web.dir}" excludes="WEB-INF/classes/.netbeans_*,META-INF/MANIFEST.MF"/>
+        </war>
+    </target>
+
+    <target name="-post-dist" depends="init,-pre-dist,compile,-do-dist-without-manifest,-do-dist-with-manifest">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the build.xml file. -->
+    </target>
+
+    <target name="dist" depends="init,-pre-dist,compile,-do-dist-without-manifest,-do-dist-with-manifest,-post-dist" description="Build distribution (WAR)."/>
+
+    <!--
+                EXECUTION SECTION
+    -->
+    <target name="-pre-run-deploy" depends="init">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the build.xml file. -->
+    </target>
+
+    <target name="-post-run-deploy" depends="init">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the build.xml file. -->
+    </target>
+
+    <target name="-display-browser" depends="init" if="do.display.browser">
+        <fail unless="client.url">Must set client.url</fail>
+        <nbbrowse url="${client.url}"/>
+    </target>
+
+    <target name="-display-browser-debug" depends="init" if="do.display.browser.debug">
+        <fail unless="client.url">Must set client.url</fail>
+        <nbbrowse url="${client.url}"/>
+    </target>
+
+    <target name="run-deploy" depends="init,compile,dist,-pre-run-deploy,-post-run-deploy,-display-browser"/>
+
+    <target name="run-display-browser" depends="init,-display-browser"/>
+
+    <target name="run" depends="run-deploy" description="Run project in IDE."/>
+
+    <target name="-pre-run" depends="init">
+        <!-- Empty placeholder for easier customization. -->
+    </target>
+
+    <!--
+                DEBUGGING SECTION
+    -->
+    <target name="debug" depends="init,compile" if="netbeans.home" description="Debug project in IDE.">
+        <webproject1:nbjpdastart xmlns:webproject1="http://www.netbeans.org/ns/web-project/1" name="${war.name}" classpath="${debug.classpath}"/>
+    </target>
+
+    <target name="-debug-start-debugger" depends="init" if="netbeans.home">
+        <webproject1:nbjpdastart xmlns:webproject1="http://www.netbeans.org/ns/web-project/1" name="${war.name}" classpath="${debug.classpath}"/>
+    </target>
+
+    <target name="-debug-start-debuggee" depends="init,compile">
+        <!-- Start the server for debugging -->
+    </target>
+
+    <target name="debug-fix" depends="init" if="netbeans.home">
+        <webproject1:nbjpdareload xmlns:webproject1="http://www.netbeans.org/ns/web-project/1"/>
+    </target>
+
+    <!--
+                JAVADOC SECTION
+    -->
+    <target name="-javadoc-build" depends="init,compile">
+        <mkdir dir="${dist.javadoc.dir}"/>
+        <javadoc destdir="${dist.javadoc.dir}" source="${javac.source}" notree="${javadoc.notree}" use="${javadoc.use}" nonavbar="${javadoc.nonavbar}" noindex="${javadoc.noindex}" splitindex="${javadoc.splitindex}" author="${javadoc.author}" version="${javadoc.version}" windowtitle="${javadoc.windowtitle}" private="${javadoc.private}" additionalparam="${javadoc.additionalparam}" failonerror="true" useexternalfile="true" encoding="${javadoc.encoding}">
+            <classpath>
+                <path path="${javac.classpath}"/>
+            </classpath>
+            <fileset dir="${src.dir}" excludes="${excludes}" includes="${includes}">
+                <filename name="**/*.java"/>
+            </fileset>
+        </javadoc>
+    </target>
+
+    <target name="javadoc" depends="init,-javadoc-build" description="Build Javadoc."/>
+
+    <!--
+                TEST COMPILATION SECTION
+    -->
+    <target name="-pre-pre-compile-test" depends="init,compile">
+        <mkdir dir="${build.test.classes.dir}"/>
+    </target>
+
+    <target name="-pre-compile-test" depends="-pre-pre-compile-test"/>
+
+    <target name="-do-compile-test" depends="init,compile,-pre-pre-compile-test,-pre-compile-test" if="have.tests">
+        <javac srcdir="${test.src.dir}" destdir="${build.test.classes.dir}" debug="${javac.debug}" deprecation="${javac.deprecation}" source="${javac.source}" target="${javac.target}" includeantruntime="false" encoding="${source.encoding}">
+            <classpath>
+                <path path="${javac.test.classpath}"/>
+            </classpath>
+            <compilerarg line="${javac.compilerargs}"/>
+        </javac>
+        <copy todir="${build.test.classes.dir}">
+            <fileset dir="${test.src.dir}" excludes="${build.classes.excludes},${excludes}" includes="${includes}"/>
+        </copy>
+    </target>
+
+    <target name="-post-compile-test" depends="init,compile,-pre-pre-compile-test,-pre-compile-test,-do-compile-test"/>
+
+    <target name="compile-test" depends="init,compile,-pre-pre-compile-test,-pre-compile-test,-do-compile-test,-post-compile-test"/>
+
+    <!--
+                TEST EXECUTION SECTION
+    -->
+    <target name="-pre-test-run" depends="init"/>
+
+    <target name="-do-test-run" depends="init,compile-test,-pre-test-run" if="have.tests"/>
+
+    <target name="-post-test-run" depends="init,compile-test,-pre-test-run,-do-test-run"/>
+
+    <target name="test" depends="init,compile-test,-pre-test-run,-do-test-run,-post-test-run"/>
+
+    <!--
+                CLEANUP SECTION
+    -->
+    <target name="deps-clean" depends="init" unless="no.deps"/>
+
+    <target name="-do-clean" depends="init">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+        <delete dir="${build.generated.dir}"/>
+    </target>
+
+    <target name="-post-clean" depends="init,-do-clean">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the build.xml file. -->
+    </target>
+
+    <target name="clean" depends="init,deps-clean,-do-clean,-post-clean" description="Clean build products."/>
+
+    <target name="deps-jar" depends="init" unless="no.deps"/>
+</project>
