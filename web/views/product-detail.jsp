@@ -137,11 +137,51 @@
                         <div class="review-name">${r.fullName}</div>
                         <div class="review-date"><fmt:formatDate value="${r.createdDate}" pattern="dd/MM/yyyy HH:mm"/></div>
                     </div>
+                    <c:if test="${sessionScope.user != null && sessionScope.user.userId == r.userId}">
+                        <div style="margin-left: auto; display: flex; gap: 8px;">
+                            <button type="button" class="btn-primary btn-sm"
+                                    onclick="toggleEditForm(${r.reviewId})"
+                                    style="background: #f59e0b; border-color: #f59e0b;">✏️ Sửa</button>
+                            <form action="${pageContext.request.contextPath}/product" method="post" style="display:inline;">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="reviewId" value="${r.reviewId}">
+                                <input type="hidden" name="productId" value="${product.productId}">
+                                <button type="submit" class="btn-primary btn-sm"
+                                        style="background: #ef4444; border-color: #ef4444;"
+                                        onclick="return confirm('Bạn có chắc muốn xóa đánh giá này?')">🗑️ Xóa</button>
+                            </form>
+                        </div>
+                    </c:if>
                 </div>
                 <div class="review-stars">
                     <c:forEach begin="1" end="${r.rating}">⭐</c:forEach>
                 </div>
                 <p style="color: var(--gray-700);">${r.comment}</p>
+
+                <!-- Edit Form (hidden by default) -->
+                <c:if test="${sessionScope.user != null && sessionScope.user.userId == r.userId}">
+                    <div id="editForm${r.reviewId}" style="display:none; margin-top: 12px; padding: 16px; background: var(--gray-100); border-radius: var(--radius);">
+                        <form action="${pageContext.request.contextPath}/product" method="post">
+                            <input type="hidden" name="action" value="edit">
+                            <input type="hidden" name="reviewId" value="${r.reviewId}">
+                            <input type="hidden" name="productId" value="${product.productId}">
+                            <div class="star-rating" style="margin-bottom: 12px;">
+                                <input type="radio" id="editStar5_${r.reviewId}" name="rating" value="5" ${r.rating == 5 ? 'checked' : ''}><label for="editStar5_${r.reviewId}">⭐</label>
+                                <input type="radio" id="editStar4_${r.reviewId}" name="rating" value="4" ${r.rating == 4 ? 'checked' : ''}><label for="editStar4_${r.reviewId}">⭐</label>
+                                <input type="radio" id="editStar3_${r.reviewId}" name="rating" value="3" ${r.rating == 3 ? 'checked' : ''}><label for="editStar3_${r.reviewId}">⭐</label>
+                                <input type="radio" id="editStar2_${r.reviewId}" name="rating" value="2" ${r.rating == 2 ? 'checked' : ''}><label for="editStar2_${r.reviewId}">⭐</label>
+                                <input type="radio" id="editStar1_${r.reviewId}" name="rating" value="1" ${r.rating == 1 ? 'checked' : ''}><label for="editStar1_${r.reviewId}">⭐</label>
+                            </div>
+                            <div class="form-group">
+                                <textarea name="comment" rows="3">${r.comment}</textarea>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button type="submit" class="btn-primary">💾 Lưu thay đổi</button>
+                                <button type="button" class="btn-outline" onclick="toggleEditForm(${r.reviewId})">Hủy</button>
+                            </div>
+                        </form>
+                    </div>
+                </c:if>
             </div>
         </c:forEach>
 
@@ -189,6 +229,13 @@
 
 </div>
 
+<c:if test="${not empty sessionScope.cartMessage}">
+    <div id="cartToast" style="position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 9999; font-weight: 600;">
+        ✅ ${sessionScope.cartMessage}
+    </div>
+    <% session.removeAttribute("cartMessage"); %>
+</c:if>
+
 <jsp:include page="/common/footer.jsp" />
 
 <script>
@@ -199,6 +246,18 @@ function changeQty(delta) {
     if (val > parseInt(input.max)) val = parseInt(input.max);
     input.value = val;
 }
+
+function toggleEditForm(reviewId) {
+    const form = document.getElementById('editForm' + reviewId);
+    if (form) {
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+}
+
+setTimeout(function() {
+    const toast = document.getElementById('cartToast');
+    if (toast) toast.style.display = 'none';
+}, 3000);
 </script>
 </body>
 </html>

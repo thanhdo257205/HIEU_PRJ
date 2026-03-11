@@ -39,6 +39,17 @@
                         <a href="${pageContext.request.contextPath}/orders?action=detail&id=${order.orderId}" class="btn-primary btn-sm">
                             Xem chi tiết
                         </a>
+                        <c:if test="${order.status == 'pending'}">
+                            <form action="${pageContext.request.contextPath}/orders" method="post" style="display:inline;">
+                                <input type="hidden" name="action" value="cancel">
+                                <input type="hidden" name="id" value="${order.orderId}">
+                                <button type="submit" class="btn-primary btn-sm"
+                                        style="background: #ef4444; border-color: #ef4444;"
+                                        onclick="return confirm('Bạn có chắc muốn hủy đơn hàng này?')">
+                                    ❌ Hủy đơn hàng
+                                </button>
+                            </form>
+                        </c:if>
                     </div>
                 </div>
             </div>

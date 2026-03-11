@@ -49,6 +49,20 @@
         <div style="text-align: right; padding: 16px 0; font-size: 1.3rem; font-weight: 700;">
             Tổng: <span class="text-danger"><fmt:formatNumber value="${order.totalAmount}" pattern="#,###"/>đ</span>
         </div>
+
+        <c:if test="${order.status == 'pending'}">
+            <div style="text-align: right; padding-bottom: 16px;">
+                <form action="${pageContext.request.contextPath}/orders" method="post" style="display:inline;">
+                    <input type="hidden" name="action" value="cancel">
+                    <input type="hidden" name="id" value="${order.orderId}">
+                    <button type="submit" class="btn-primary"
+                            style="background: #ef4444; border-color: #ef4444;"
+                            onclick="return confirm('Bạn có chắc muốn hủy đơn hàng này?')">
+                        ❌ Hủy đơn hàng
+                    </button>
+                </form>
+            </div>
+        </c:if>
     </div>
 </div>
 

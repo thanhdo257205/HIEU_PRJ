@@ -149,6 +149,20 @@
 </div>
 
 <jsp:include page="/common/footer.jsp" />
+
+<c:if test="${not empty sessionScope.cartMessage}">
+    <div id="cartToast" style="position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 9999; font-weight: 600;">
+        ✅ ${sessionScope.cartMessage}
+    </div>
+    <script>
+        setTimeout(function() {
+            const toast = document.getElementById('cartToast');
+            if (toast) toast.style.display = 'none';
+        }, 3000);
+    </script>
+    <% session.removeAttribute("cartMessage"); %>
+</c:if>
+
 <script src="${pageContext.request.contextPath}/js/script.js"></script>
 </body>
 </html>

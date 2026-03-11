@@ -62,4 +62,32 @@ public class ReviewDAO {
         }
         return false;
     }
+
+    public boolean deleteReview(int reviewId, int userId) {
+        String sql = "DELETE FROM Reviews WHERE reviewId = ? AND userId = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, reviewId);
+            ps.setInt(2, userId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateReview(int reviewId, int userId, int rating, String comment) {
+        String sql = "UPDATE Reviews SET rating = ?, comment = ? WHERE reviewId = ? AND userId = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, rating);
+            ps.setString(2, comment);
+            ps.setInt(3, reviewId);
+            ps.setInt(4, userId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

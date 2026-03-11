@@ -165,6 +165,59 @@ public class OrderDAO {
         return list;
     }
 
+    // Huy don hang (chi huy khi status = pending va thuoc user)
+    public boolean cancelOrder(int orderId, int userId) {
+        Connection conn = null;
+        try {
+            conn = DBContext.getConnection();
+            conn.setAutoCommit(false);
+
+            // Kiem tra don hang thuoc user va dang pending
+            String checkSql = "SELECT orderId FROM Orders WHERE orderId = ? AND userId = ? AND status = 'pending'";
+            try (PreparedStatement checkPs = conn.prepareStatement(checkSql)) {
+                checkPs.setInt(1, orderId);
+                checkPs.setInt(2, userId);
+                ResultSet rs = checkPs.executeQuery();
+                if (!rs.next()) {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            // Hoan lai ton kho va giam soldCount
+            String restoreStockSql = "UPDATE Products SET quantity = quantity + od.quantity, "
+                    + "soldCount = soldCount - od.quantity "
+                    + "FROM Products p JOIN OrderDetails od ON p.productId = od.productId "
+                    + "WHERE od.orderId = ?";
+            try (PreparedStatement restorePs = conn.prepareStatement(restoreStockSql)) {
+                restorePs.setInt(1, orderId);
+                restorePs.executeUpdate();
+            }
+
+            // Cap nhat trang thai don hang thanh cancelled
+            String cancelSql = "UPDATE Orders SET status = 'cancelled' WHERE orderId = ? AND userId = ? AND status = 'pending'";
+            int updated;
+            try (PreparedStatement cancelPs = conn.prepareStatement(cancelSql)) {
+                cancelPs.setInt(1, orderId);
+                cancelPs.setInt(2, userId);
+                updated = cancelPs.executeUpdate();
+            }
+
+            conn.commit();
+            return updated > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (conn != null) {
+                try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
+        } finally {
+            if (conn != null) {
+                try { conn.setAutoCommit(true); conn.close(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
+        }
+        return false;
+    }
+
     // Cap nhat trang thai don hang (Admin)
     public boolean updateOrderStatus(int orderId, String status) {
         String sql = "UPDATE Orders SET status = ? WHERE orderId = ?";
