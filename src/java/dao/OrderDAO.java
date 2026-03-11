@@ -177,21 +177,30 @@ public class OrderDAO {
             try (PreparedStatement checkPs = conn.prepareStatement(checkSql)) {
                 checkPs.setInt(1, orderId);
                 checkPs.setInt(2, userId);
-                ResultSet rs = checkPs.executeQuery();
-                if (!rs.next()) {
-                    conn.rollback();
-                    return false;
+                try (ResultSet rs = checkPs.executeQuery()) {
+                    if (!rs.next()) {
+                        conn.rollback();
+                        return false;
+                    }
                 }
             }
 
-            // Hoan lai ton kho va giam soldCount
-            String restoreStockSql = "UPDATE Products SET quantity = quantity + od.quantity, "
-                    + "soldCount = soldCount - od.quantity "
-                    + "FROM Products p JOIN OrderDetails od ON p.productId = od.productId "
-                    + "WHERE od.orderId = ?";
-            try (PreparedStatement restorePs = conn.prepareStatement(restoreStockSql)) {
-                restorePs.setInt(1, orderId);
-                restorePs.executeUpdate();
+            // Hoan lai ton kho va giam soldCount - tung san pham mot
+            String getDetailsSql = "SELECT productId, quantity FROM OrderDetails WHERE orderId = ?";
+            String restoreStockSql = "UPDATE Products SET quantity = quantity + ?, soldCount = soldCount - ? WHERE productId = ?";
+            try (PreparedStatement detailsPs = conn.prepareStatement(getDetailsSql);
+                 PreparedStatement restorePs = conn.prepareStatement(restoreStockSql)) {
+                detailsPs.setInt(1, orderId);
+                try (ResultSet rs = detailsPs.executeQuery()) {
+                    while (rs.next()) {
+                        int productId = rs.getInt("productId");
+                        int qty = rs.getInt("quantity");
+                        restorePs.setInt(1, qty);
+                        restorePs.setInt(2, qty);
+                        restorePs.setInt(3, productId);
+                        restorePs.executeUpdate();
+                    }
+                }
             }
 
             // Cap nhat trang thai don hang thanh cancelled
